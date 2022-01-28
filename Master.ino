@@ -37,11 +37,10 @@ esp_now_peer_info_t slave;
 #define PRINTSCANRESULTS 0
 #define DELETEBEFOREPAIR 0
 
-#define ledPin 23
-#define tasterPin 2
-#define highPin 15
+#define outPin 23
+#define inPin 2
 
-int tasterIlese = 0;
+int readInput = 0;
 
 // Init ESP Now with fallback
 void InitESPNow() {
@@ -70,10 +69,8 @@ void configDeviceAP() {
 }
 
 void setup() {
-  pinMode(ledPin, OUTPUT);
-  pinMode(tasterPin, INPUT);
-  pinMode(highPin, OUTPUT);
-  digitalWrite(highPin, HIGH);
+  pinMode(outPin, OUTPUT);
+  pinMode(inPin, INPUT);
   
   Serial.begin(115200);
   Serial.println("ESPNow/Basic/Slave Example");
@@ -102,11 +99,11 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
   //Serial.print("Last Packet Recv from: "); Serial.println(macStr);
   if(*data)
   {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(outPin, HIGH);
   }
   else
   {
-    digitalWrite(ledPin, LOW);
+    digitalWrite(outPin, LOW);
   }
   Serial.print("Received Data: "); Serial.println(*data);
   Serial.println("");
@@ -279,7 +276,7 @@ void ScanForSlave() {
 
 void loop() 
 {
-  tasterIlese = digitalRead(tasterPin);
+  readInput = digitalRead(inPin);
   // In the loop we scan for slave
   //manageSlave();
   // If Slave is found, it would be populate in `slave` variable
@@ -293,7 +290,7 @@ void loop()
     {
       // pair success or already paired
       // Send data to device
-      sendData(tasterIlese);
+      sendData(readInput);
     } else 
     {
       // slave pair failed
